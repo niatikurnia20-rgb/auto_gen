@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipCore AI Video Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo-area">
+                <i class="fa-solid fa-wand-magic-sparkles gradient-text"></i>
+                <h1> ClipCore <span class="gradient-text">AI</span></h1>
+            </div>
+            <p class="subtitle">Autonomous Video Synthesis Engine</p>
+        </header>
+        
+        <div class="card glass-panel">
+            <div class="input-group">
+                <label for="topic">PROMPT</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-keyboard input-icon"></i>
+                    <input type="text" id="topic" placeholder="Describe your video concept..." autocomplete="off">
+                </div>
+                <button onclick="startGeneration()" id="generate-btn">
+                    <span>Generate Video</span>
+                    <i class="fa-solid fa-bolt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="status-box" class="card glass-panel hidden">
+            <div class="status-header">
+                <div class="loader-ring"></div>
+                <h3 id="status-text">Initializing Neural Network...</h3>
+            </div>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="term-title">system_logs.log</span>
+                </div>
+                <div id="logs" class="terminal-content"></div>
+            </div>
+        </div>
+
+        <div id="result-box" class="card glass-panel hidden">
+            <div class="success-header">
+                <i class="fa-solid fa-circle-check"></i>
+                <h3>Generation Complete</h3>
+            </div>
+            
+            <div class="video-wrapper">
+                <video id="video-player" controls></video>
+            </div>
+            
+            <a id="download-link" href="#" download class="full-width-link">
+                <button class="download-btn">
+                    <i class="fa-solid fa-download"></i> Download MP4
+                </button>
+            </a>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>

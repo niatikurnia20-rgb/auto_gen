@@ -1,0 +1,20 @@
+youtube_auto_gen/
+│
+├── app.py                 # Main Flask Backend
+├── config.py              # API Keys & Settings
+├── requirements.txt       # Python Dependencies
+│
+├── modules/               # Logic Modules
+│   ├── __init__.py
+│   ├── script_gen.py      # HuggingFace API Logic
+│   ├── tts_gen.py         # TTS Logic (gTTS/Coqui)
+│   ├── media_fetch.py     # Pexels API Logic
+│   └── video_editor.py    # MoviePy Logic
+│
+├── static/                # CSS & JS & Generated Files
+│   ├── style.css
+│   ├── script.js
+│   └── videos/            # Where final videos are saved
+│
+└── templates/             # HTML
+    └── index.html
