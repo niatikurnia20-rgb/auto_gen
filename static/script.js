@@ -1,6 +1,8 @@
 async function startGeneration() {
     const topicInput = document.getElementById('topic');
     const topic = topicInput.value;
+    const selectedAspect = document.querySelector('input[name="aspect_ratio"]:checked');
+    const aspectRatio = selectedAspect ? selectedAspect.value : 'portrait';
     const btn = document.getElementById('generate-btn');
 
     if (!topic) {
@@ -24,7 +26,7 @@ async function startGeneration() {
         const response = await fetch('/generate', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ topic: topic })
+            body: JSON.stringify({ topic: topic, aspect_ratio: aspectRatio })
         });
         
         if (!response.ok) throw new Error("API Error");
@@ -62,7 +64,7 @@ async function checkStatus(taskId) {
 
             if (data.status === 'Completed') {
                 clearInterval(interval);
-                showResult(data.video_url);
+                showResult(data.video_url, data.aspect_ratio || 'portrait');
             } else if (data.status === 'Failed') {
                 clearInterval(interval);
                 alert("Generation Failed!");
@@ -75,11 +77,14 @@ async function checkStatus(taskId) {
     }, 2000);
 }
 
-function showResult(url) {
+function showResult(url, aspectRatio) {
     resetUI();
     document.getElementById('status-box').classList.add('hidden');
     const resultBox = document.getElementById('result-box');
     resultBox.classList.remove('hidden');
+    const videoWrapper = document.querySelector('.video-wrapper');
+    videoWrapper.classList.remove('portrait', 'landscape');
+    videoWrapper.classList.add(aspectRatio === 'portrait' ? 'portrait' : 'landscape');
     
     const video = document.getElementById('video-player');
     video.src = url;

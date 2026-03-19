@@ -13,6 +13,7 @@ from modules.script_gen import generate_script
 from modules.tts_gen import generate_audio
 from modules.media_fetch import fetch_stock_media
 from modules.video_editor import create_video
+from modules.video_format import normalize_aspect_ratio
 
 app = Flask(__name__)
 
@@ -46,14 +47,17 @@ def cleanup_old_files():
             except Exception as e:
                 print(f"Cleanup Error {filename}: {e}")
 
-def process_video_task(task_id, topic):
+def process_video_task(task_id, topic, aspect_ratio):
     """
     Background worker that runs the full video generation pipeline.
     """
+    def add_log(message):
+        tasks[task_id]['logs'].append(message)
+
     try:
         # 1. Script Generation (Gemini 2.0)
         tasks[task_id]['status'] = 'Writing Script...'
-        script = generate_script(topic)
+        script = generate_script(topic, progress_callback=add_log)
         tasks[task_id]['logs'].append(f"Script generated ({len(script.split())} words).")
         
         # 2. Audio Generation (TTS)
@@ -67,12 +71,12 @@ def process_video_task(task_id, topic):
         # 3. Media Fetching (Video Clips)
         tasks[task_id]['status'] = 'Finding Stock Footage...'
         # Request 15 clips to cover a ~60s video
-        media_files = fetch_stock_media(topic, count=15)
+        media_files = fetch_stock_media(topic, count=15, aspect_ratio=aspect_ratio)
         
         if not media_files:
-            raise Exception("No video clips found for this topic.")
+            raise Exception(f"No {aspect_ratio} video clips found for this topic.")
             
-        tasks[task_id]['logs'].append(f"Found {len(media_files)} video clips.")
+        tasks[task_id]['logs'].append(f"Found {len(media_files)} {aspect_ratio} video clips.")
 
         # 4. Video Rendering (MoviePy)
         tasks[task_id]['status'] = 'Rendering Final Video (This takes time)...'
@@ -80,7 +84,7 @@ def process_video_task(task_id, topic):
         video_path = os.path.join(OUTPUT_FOLDER, video_filename)
         
         # Create the video
-        create_video(script, audio_path, media_files, video_path)
+        create_video(script, audio_path, media_files, video_path, aspect_ratio=aspect_ratio)
         
         # 5. Success
         tasks[task_id]['status'] = 'Completed'
@@ -105,6 +109,7 @@ def generate():
 
     data = request.json
     topic = data.get('topic')
+    aspect_ratio = normalize_aspect_ratio(data.get('aspect_ratio'))
     
     if not topic:
         return jsonify({"error": "Topic is required"}), 400
@@ -115,12 +120,13 @@ def generate():
     # Initialize Status
     tasks[task_id] = {
         'status': 'Queued',
-        'logs': ['Job started...'],
-        'video_url': None
+        'logs': [f'Job started ({aspect_ratio}).'],
+        'video_url': None,
+        'aspect_ratio': aspect_ratio
     }
     
     # Start Background Thread
-    thread = threading.Thread(target=process_video_task, args=(task_id, topic))
+    thread = threading.Thread(target=process_video_task, args=(task_id, topic, aspect_ratio))
     thread.daemon = True # Ensures thread dies if app restarts
     thread.start()
     

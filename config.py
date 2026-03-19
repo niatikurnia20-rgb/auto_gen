@@ -7,7 +7,6 @@ load_dotenv()
 
 # API Keys (Fetched safely from system)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print("Kunci Gemini yang benar-benar terbaca adalah:", GEMINI_API_KEY)
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY")
 HF_API_KEY = os.getenv("HF_API_KEY")  # Optional if you still use it
 LMNT_API_KEY = os.getenv("LMNT_API_KEY")

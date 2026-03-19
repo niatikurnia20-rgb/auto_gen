@@ -27,6 +27,25 @@
                     <i class="fa-solid fa-keyboard input-icon"></i>
                     <input type="text" id="topic" placeholder="Describe your video concept..." autocomplete="off">
                 </div>
+                <div class="aspect-selector">
+                    <span class="selector-label">VIDEO RATIO</span>
+                    <div class="aspect-options">
+                        <label class="aspect-option">
+                            <input type="radio" name="aspect_ratio" value="landscape">
+                            <span>
+                                <i class="fa-solid fa-tv"></i>
+                                Landscape 16:9
+                            </span>
+                        </label>
+                        <label class="aspect-option">
+                            <input type="radio" name="aspect_ratio" value="portrait" checked>
+                            <span>
+                                <i class="fa-solid fa-mobile-screen"></i>
+                                Portrait 9:16
+                            </span>
+                        </label>
+                    </div>
+                </div>
                 <button onclick="startGeneration()" id="generate-btn">
                     <span>Generate Video</span>
                     <i class="fa-solid fa-bolt"></i>
