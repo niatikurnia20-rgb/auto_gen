@@ -1,8 +1,8 @@
 Flask
 requests
-moviepy>=2.0,<3.0
+moviepy
+gTTS
 Pillow
 google-generativeai
 wikipedia
 gunicorn
-python-dotenv
